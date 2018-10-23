@@ -34,13 +34,13 @@ class System {
 public:
 	System(); //Constructor
 	void startMenu(); //Calls the start menu, waits for choices.
-	void gameStep(); //Steps to next move in game
+	void workGame(); //Steps to next move in game
 	void displayHighScore(); //Display high scores
 	void addHighScore(string name, int score); //Adds high score
-	Character getCharacter(); //Returns the character so other classes can use it.
+	Player getCharacter(); //Returns the character so other classes can use it.
 	void setScoreFile(string filename); //Changes highscore file, refills array (USED FOR TESTING)
 	bool replay(); //Sees if player wants to play again
-	void readPapers(); //Lose time, gain intel
+	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
 private:
@@ -50,15 +50,15 @@ private:
 	void writeHighScore(); // Writes highscore to file
 	static const int MAX_SCORES = 10; //Max number of high scores to show
 	static const int FIXED_TIME_LOSS = 1; //Time loss for collecting change or reading papers
-	Character player;
-	Menu menu;
-	EncounterControl encounter;
-	PuzzleControl puzzle;
+	Player player;
+	Menus menu;
+	Encounter encounter;
+	Puzzle puzzle;
 	int numOfScores; //Number of high scores in file
 	string highScoreFile; //File name for highscore
 	Highscore highscore_list; //highscore linked list
-	bool start;
-	bool name; //Check if need name or note
+	bool gameStart;
+	bool needName; //Check if need name or note
 };
 
 
@@ -83,10 +83,10 @@ void test_addHighScore();
 //Constructor. Initializes values.
 System::System() {
 	//Player and menu already set
-	start = true; //The game has just started.
-	name = true; //We need the player's name
+	gameStart = true; //The game has just started.
+	needName = true; //We need the player's name
 	player.steps = 20; //length of hallway
-	emptyScoreArray();
+	emptyScoreList();
 	highScoreFile = "highscores.txt";
 	fillScoreArray();
 	srand(time(0)); //Sets random seed
@@ -96,10 +96,10 @@ System::System() {
 //Display menu and get input choice
 void System::startMenu() {
 	//Get name and greet user
-	if (name) {
+	if (needName) {
 		cout << "What's your name? ";
 		cin >> player.name;
-		name = false; //No longer need name.
+		needName = false; //No longer need name.
 	}
 	cout << "\n====================================================\n";
 	cout << "|\t\tWelcome, " << player.name << "\t\t\t|";
@@ -109,7 +109,7 @@ void System::startMenu() {
 	//If 1 is inputed, start a new game.
 	if (playerChoice == 1) {
 		cout << "\nEntering the Game...\n\n";
-		gameStep();
+		workGame();
 	}
 	//If 2, display highscore
 	else if (playerChoice == 2) {
@@ -127,34 +127,34 @@ void System::startMenu() {
 //Displays the game menu and uses player input to step into next game action.
 //If start is true, initialize character
 //NOT FINISHED ADD ENCOUNTER
-void System::gameStep() {
+void System::workGame() {
 	//If just started a new game, initialize character stats and display them.
-	if (start) {
+	if (gameStart) {
 		player.time = rand() % 20 + 10; //Range of 10-30
 		player.intelligence = rand() % 20 + 10; //range of 10-30
 		player.money = fRand(5.0, 20.0); //range of $5.00 - $20.00
 		player.steps = 20;
 		player.displayStats();
-		start = false; //Set start to false, no longer a new game.
+		gameStart = false; //Set start to false, no longer a new game.
 	}
 	//display status messsage before menu
 	cout << "You are " << player.steps << " steps from the goal. Time left: " << player.time << endl;
 	//Display game menu, get choice, step into next game action.
 	int choice = menu.gameMenu();
-	int ranNum;
+	int randNum;
 	switch (choice) {
 		//Step forward. Chance of encounter
 	case 1:
 		//10% chance for nothing to happen
 		//45% chance for encounter
 		//45% chance for puzzle
-		ranNum = rand() % 100;
-		if (ranNum < 10) {
+		randNum = rand() % 100;
+		if (randNum < 10) {
 			cout << "\nYou step forward and nothing happens\n";
 			player.time = player.time - 1;
 			player.steps = player.steps - 1;
 		}
-		else if (ranNum >= 10 && ranNum < 55) {
+		else if (randNum >= 10 && randNum < 55) {
 			encounter = Encounter(player); //reinitialize variables in encounter
 			player = encounter.randomEncounter();
 		}
@@ -165,7 +165,7 @@ void System::gameStep() {
 		break;
 		//Read technical papers. Gain intelligence, lose time.
 	case 2:
-		readPapers();
+		readTechPapers();
 		break;
 		//Search for change. Gain money, lose time.
 	case 3:
@@ -180,10 +180,10 @@ void System::gameStep() {
 		cout << "\nYou FAILED\n";
 		exit(1);
 		break;
-		//Because menu handles player input, should never reach default. 
-		//Added just in case, to alert something is wrong.
+		//Because the menus class handles player input, it should never reach default. 
+		//If it does, you messed up somewhere.
 	default:
-		cout << "Error. Valid input not detected\n";
+		cout << "Error. Please blame Cameron.\n";
 	}
 	//Check if lost the game
 	if (player.time <= 0 || player.money <= 0 || player.intelligence <= 0) {
@@ -193,14 +193,14 @@ void System::gameStep() {
 	else if (player.steps <= 0) {
 		endGame(true);
 	}
-	//If didn't win or lose, do next gameStep.
+	//If didn't win or lose, do next workGame.
 	else {
-		gameStep();
+		workGame();
 	}
 }
 
-//Returns character
-Character System::getCharacter() {
+//Returns player
+Player System::getPlayer() {
 	return player;
 }
 
@@ -290,7 +290,7 @@ void System::endGame(bool win) {
 	//Ask to replay
 	if (replay()) {
 		cout << "\nRestarting Game...\n\n";
-		start = true;
+		gameStart = true;
 		startMenu();
 	}
 	else {
@@ -322,7 +322,7 @@ bool System::replay() {
 
 //Read technical papers
 //Lose time, gain intelligence
-void System::readPapers() {
+void System::readTechPapers() {
 	cout << "\nYou read technical papers\n";
 	int intelChange = rand() % 5 + 1; //Range of 1-5
 	cout << "You gain " << intelChange << " intelligence\n\n";
@@ -334,7 +334,7 @@ void System::readPapers() {
 //Gain money, lose time.
 void System::searchChange() {
 	cout << "\nYou search for loose change\n";
-	double moneyChange = fRand(0.25, 3.50);
+	double moneyChange = fRand(0.01, 100.00);
 	cout << "You gain $" << fixed << setprecision(2) << moneyChange << "\n\n";
 	player.money = player.money + moneyChange;
 	player.time = player.time - FIXED_TIME_LOSS;
@@ -344,9 +344,9 @@ void System::searchChange() {
 //Adds highscore to highscore array, then call to write it.
 void System::addHighScore(string name, int score) {
 	//Create highscore
-	Highscore newHS;
-	newHS.name = name;
-	newHS.score = score;
+	Highscore newHighScore;
+	newHighScore.name = name;
+	newHighScore.score = score;
 	int target = -1;
 	//Sort scores
 	//Find target spot first
@@ -366,7 +366,7 @@ void System::addHighScore(string name, int score) {
 			highscore_array[j] = highscore_array[j - 1];
 		}
 		//set target spot to new score
-		highscore_array[target] = newHS;
+		highscore_array[target] = newHighScore;
 		//write the highscore to file
 		writeHighScore();
 	}
@@ -458,8 +458,8 @@ void test_readPapers() {
 	int startTime = 25;
 	int startIntelligence = 15;
 	cout << "readPapers Testing\n";
-	system.readPapers();
-	Character player = system.getCharacter();
+	system.readTechPapers();
+	Player player = system.getPlayer();
 	int timeChange = startTime - player.time;
 	int intelChange = player.intelligence - startIntelligence;
 	//Be sure intelligence is in the right range
@@ -480,7 +480,7 @@ void test_changeSearch() {
 	int startMoney = 10.00;
 	cout << "changeSearch Testing\n";
 	system.searchChange();
-	Character player = system.getCharacter();
+	Player player = system.getPlayer();
 	int timeChange = startTime - player.time;
 	double moneyChange = player.money - startMoney;
 	//Be sure intelligence is in the right range

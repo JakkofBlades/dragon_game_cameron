@@ -33,13 +33,13 @@ class System {
 public:
 	System(); //Constructor
 	void startMenu(); //Calls the start menu, waits for choices.
-	void gameStep(); //Steps to next move in game
+	void workGame(); //Steps to next move in game
 	void displayHighScore(); //Display high scores
 	void addHighScore(string name, int score); //Adds high score
 	Character getCharacter(); //Returns the character so other classes can use it.
 	void setScoreFile(string filename); //Changes highscore file, refills array (USED FOR TESTING)
 	bool replay(); //Sees if player wants to play again
-	void readPapers(); //Lose time, gain intel
+	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
 private:
@@ -56,8 +56,8 @@ private:
 	int numOfScores; //Number of high scores in file
 	string highScoreFile; //File name for highscore
 	Highscore highscore_list; //highscore linked list
-	bool start;
-	bool name;
+	bool gameStart;
+	bool needName;
 	int fixedTimeLoss; //Time loss for collecting change or reading papers
 };
 #endif
