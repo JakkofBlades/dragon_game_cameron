@@ -43,6 +43,7 @@ public:
 	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
+	std::list<Highscore> scores; //Linked list of scores.
 private:
 	void fillScoreArray(); //Create score array for high scores
 	void emptyScoreArray(); //Clears score array

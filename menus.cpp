@@ -49,7 +49,7 @@ Menus::Menus() {
 //Displays the main menu,returns player input
 int Menus::menuMain() {
 	//Main menu
-	cout << "\n\t1) Start a new game of Escape Shelby!\n";
+	cout << "\n\t1) Start a new game of Shelby and Dragons!\n";
 	cout << "\t2) View top 10 High Scores\n";
 	cout << "\t3) Quit game\n\n";
 	cout << "Please choose an option: ";
@@ -85,7 +85,7 @@ int Menus::menuGame() {
 	cout << "\t1) Move forward (takes time, could be risky...)\n";
 	cout << "\t2) Read technical papers (boost intelligence, takes time)\n";
 	cout << "\t3) Search for loose change (boost money, takes time)\n";
-	cout << "\t4) View character\n";
+	cout << "\t4) View stats\n";
 	cout << "\t5) Quit the game\n\n";
 	cout << "Please choose an action: ";
 	//Get input
