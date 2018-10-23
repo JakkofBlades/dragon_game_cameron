@@ -38,15 +38,48 @@ public:
 	void displayHighScore(); //Display high scores
 	void addHighScore(string name, int score); //Adds high score
 	Player getCharacter(); //Returns the character so other classes can use it.
-	void setScoreFile(string filename); //Changes highscore file, refills array (USED FOR TESTING)
 	bool replay(); //Sees if player wants to play again
 	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
 	std::list<Highscore> scores; //Linked list of scores.
+	void PrintScores()
+	{
+		for (auto score : scores) //C++ for each loop
+		{
+			std::cout << score.name << " " << score.score << "\n"
+		}
+	}
+	void LoadScores(std::string filepath)
+	{
+	std:string line;
+		std::ifstream fileStream(filePath);
+		if (fileStream.is_open())
+		{
+			while (getline(fileStream, line))
+			{
+				//name score
+				Highscore localScore;
+
+			std:istringstream iss(line);
+
+				iss >> localScore.name;
+				iss >> (int)localScore.score;
+
+				scores.push_back(localScore);
+			}
+		}
+	}
+	void WriteScore(Highscore score)
+	{
+		if (score.score > score.front().score)
+		{
+			score.push_front(score);
+		}
+	}
+
 private:
 	void fillScoreArray(); //Create score array for high scores
-	void emptyScoreArray(); //Clears score array
 	double fRand(double fMin, double fMax); //Rand function for double
 	void writeHighScore(); // Writes highscore to file
 	static const int MAX_SCORES = 10; //Max number of high scores to show
@@ -91,6 +124,11 @@ System::System() {
 	highScoreFile = "highscores.txt";
 	fillScoreArray();
 	srand(time(0)); //Sets random seed
+}
+
+System()::scores()
+{
+	LoadScores(highScoreFile);
 }
 
 //Start menu of the game
@@ -241,23 +279,6 @@ void System::fillScoreArray() {
 	inStream.close();
 	//Set number of scores to how many there are.
 	numOfScores = index;
-}
-
-//Change filename for the highscore file. Only used for testing.
-void System::setScoreFile(string filename) {
-	highScoreFile = filename;
-	emptyScoreArray();
-	fillScoreArray();
-}
-
-//Empties score array. Reset numOfScores
-//Mainly used for testing purposes.
-void System::emptyScoreArray() {
-	for (int i = 0; i < MAX_SCORES; i++) {
-		highscore_array[i].name = "";
-		highscore_array[i].score = -1;
-	}
-	numOfScores = 0;
 }
 
 //Allows rand to return double, for money initialization.
