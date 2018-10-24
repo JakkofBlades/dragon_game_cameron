@@ -19,28 +19,8 @@
 #include <iomanip> //std:setw
 #include <random>
 #include "player.h" //The header for player class.
+#include "encounter.h" //The header for encounter class.
 using namespace std;
-
-//encounter class
-//Manages events
-class Encounter
-{
-public:
-	Encounter(); //Default Constructor
-	Encounter(Player playerIn); //Constructor.
-	void setPlayer(Player playerIn); //Set user
-	Player randomEncounter();
-private:
-	static const int ENCOUNTERS_POSSIBLE = 6; //Add 1 more if time allows.
-	Player player;
-	void professor(); //Encounter professor. -time, +int
-	void student(); //Encounter a fellow student. -time, -money
-	void nothing(); //No event occurs. 
-	void work(); //Forced to grade a paper. -time, +money
-	void amiibo(); //Find a lost amiibo. +money, +int, +time (Add a random generator to determine which amiibo if time allows)
-	void phoneCall(); //Best friend calls. -time, +int
-	double fRand(double fMin, double fMax); //Rand function for double
-};
 
 
 //default constructor
@@ -98,8 +78,8 @@ void Encounter::professor() {
 	//80% chance to lose 1 time and gain 1-4 intelligence
 	//20% chance to lose 4 time and gain 6-10 intelligence
 	int randNum = rand() % 100;
-	int changeIntel;
-	int changeTime;
+	int changeIntel = 0;
+	int changeTime = 0;
 	if (randNum < 80) {
 		cout << "Your conversation is short, but you feel smarter.\n";
 		changeIntel = rand() % 4 + 1;
@@ -158,6 +138,7 @@ double Encounter::fRand(double fMin, double fMax) {
 //Nothing happens.
 //Lose time.
 void Encounter::nothing() {
+	cout << "You step forward and a special amount of nothing happens.\n";
 	player.time -= 1;
 	player.steps = player.steps - 1; //1 step closer to victory.
 }
@@ -171,8 +152,8 @@ void Encounter::work() {
 	//20% chance to gain $3.00 -$8.00, lose 3 time
 	//5% chance to lose $1.00-$5.00, lose 3 time
 	int randNum = rand() % 100;
-	double changeMoney;
-	int changeTime;
+	double changeMoney = 0;
+	int changeTime = 0;
 	if (randNum < 75) {
 		cout << "You're a fast grader!\n";
 		changeMoney = fRand(1.0, 5.0);
@@ -204,8 +185,8 @@ void Encounter::amiibo() {
 	int changeMoney = rand() % 10 + 1;
 	int changeTime = rand() % 4 + 1;
 	int changeIntel = rand() % 5 + 1;
-	cout << "You are reminded of simpler times. You place the figure in your bag and see extra money. "
-		<< "You realize your memory is better than you think. You also see that you have a bit more time.";
+	cout << "You are reminded of simpler times.\nYou place the figure in your bag and see extra money.\n"
+		<< "You realize your memory is better than you think.\nYou also see that you have a bit more time.\n";
 	player.money = player.money + changeMoney;
 	player.intelligence = player.intelligence + changeIntel;
 	player.time = player.time + changeTime;

@@ -14,20 +14,8 @@
 #include <ctime>
 #include <iomanip> //std:setw
 #include <random>
+#include "menus.h"
 using namespace std;
-
-//Menus class
-class Menus
-{
-public:
-	Menus(); //Default constructor
-	int menuGame(); //Generates the game's menu.
-	int menuMain(); //Generates the main menu.
-private:
-	int playerAction; //Player chooses an action.
-	void checkGameAction(); //Check that an in-game action is valid.
-	void checkMainAction(); //Check that a main menu aciton is valid.
-};
 
 //Test the main menu function.
 void test_menuMain();

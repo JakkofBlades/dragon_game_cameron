@@ -15,35 +15,9 @@
 #include <iomanip> //std:setw
 #include <random>
 #include "player.h" //Player class
+#include "puzzle.h" //Puzzle class
 using namespace std;
 
-
-//puzzle class
-//Controls the puzzles
-class Puzzle {
-public:
-	Puzzle(Player playerIn); //Constructor
-	Puzzle(); //Default Constructor
-	void setPlayer(Player playerIn); //Set player
-	Player randomPuzzle();
-private:
-	static const int NUMBER_OF_PUZZLES = 6; //Number of different encounters
-	Player player;
-	void nintendoConsole(); //What home console released after the Wii?
-	void child(); //What's the name of the tiger?
-	void cards(); //how many sheep
-	void weeks(); //how many months with 28 days
-	void pattern(); //letter pattern
-	void joe(); //jimmys family
-	double fRand(double fMin, double fMax); //Rand function for double
-	void verifyInput(); //makes sure input is good.
-	int answerChoice; // player answer
-};
-
-//Used for testing. Comment out when submitting.
-//int main() {
-
-//}
 
 //default constructor
 Puzzle::Puzzle() {
@@ -66,7 +40,7 @@ void Puzzle::setPlayer(Player playerIn) {
 //Sets a random puzzle
 Player Puzzle::randomPuzzle() {
 	cout << endl;
-	int randNum = rand() % NUMBER_OF_PUZZLES; //Randomly choose from encounters
+	int randNum = rand() % PUZZLES_POSSIBLE; //Randomly choose from encounters
 	switch (randNum) {
 	case 0:
 		nintendoConsole();
@@ -110,8 +84,8 @@ void Puzzle::nintendoConsole() {
 	cin >> answerChoice;
 	verifyInput();
 	cout << endl; //Formatting
-	int changeIntel;
-	int changeTime;
+	int changeIntel = 0;
+	int changeTime = 0;
 	double changeMoney;
 	//Correct answer
 	if (answerChoice == 3) {
@@ -144,7 +118,7 @@ void Puzzle::child() {
 	cin >> answerChoice;
 	verifyInput();
 	cout << endl; //Formatting
-	int changeIntel;
+	int changeIntel = 0;
 	int changeTime = 1;
 	int changeStep = 1;
 	//Try to run away: 60% chance successful, 40% chance unsuccessful
@@ -188,7 +162,7 @@ void Puzzle::cards() {
 	cin >> answerChoice;
 	verifyInput();
 	cout << endl; //Formatting
-	int changeIntel;
+	int changeIntel = 0;
 	if (answerChoice == 2) {
 		cout << "\"That is how many cards I have left!\" The scalper exclaims\n";
 		cout << "You gain 2 intelligence\n";
@@ -238,9 +212,9 @@ void Puzzle::weeks() {
 //Pattern is x^2.
 //Gain intelligence or lose time.
 void Puzzle::pattern() {
-	cout << "A fairy appears! She says you can only pass if you can place the next 2 numbers in the following pattern:\n";
-	cout << "1, 4, 9, 16, ...\n";
-	cout << "1) 25, 36, N\n2) 24, 36, M\n3) 25, 144, S\n4) 6, 2, N\n";
+	cout << "A fairy appears!\n She says you can only pass if you can place the next 2 numbers in the following pattern:\n";
+	cout << "1, 4, 9, 16, ...\n\n";
+	cout << "1) 25, 36 \n2) 24, 36 \n3) 25, 144 \n4) 6, 2 \n";
 	cout << "What is your answer? (enter a number 1-4): ";
 	cin >> answerChoice;
 	verifyInput();

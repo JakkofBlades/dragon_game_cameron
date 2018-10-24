@@ -132,7 +132,7 @@ void System::workGame() {
 		//45% chance for puzzle
 		randNum = rand() % 100;
 		if (randNum < 10) {
-			cout << "\nYou step forward and nothing happens\n";
+			cout << "\nYou step forward and nothing happens\n\n";
 			player.time = player.time - 1;
 			player.steps = player.steps - 1;
 		}
@@ -212,6 +212,7 @@ void System::endGame(bool win) {
 		cout << "Your score: " << highScore << endl;
 		//Add and display high scores
 		//Iterate through, if larger list.insert(highScore), otherwise go to the next one
+
 		cout << "\nHighscore list:\n";
 	}
 	//Ask to replay
