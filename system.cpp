@@ -6,6 +6,7 @@
 * Compile in jGRASP or g++ compiler.
 */
 
+#include "system.h" //System header
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
@@ -15,44 +16,23 @@
 #include <iomanip> //std:setw
 #include <random>
 #include "menus.h" //Menu class
-#include "player.h" //Character class
+#include "player.h" //Player class
 #include "encounter.h" //Encounter class
 #include "puzzle.h" //Puzzle class
 #include <list> //Linked List
+#include <sstream> //String stream
 using namespace std;
-
-
-//High score struct 
-struct Highscore {
-	string name;
-	int score;
-};
-
-//System class
-//The backbone of the game. Makes calls to other classes to make a cohesive game.
-class System {
-public:
-	System(); //Constructor
-	void startMenu(); //Calls the start menu, waits for choices.
-	void workGame(); //Steps to next move in game
-	void displayHighScore(); //Display high scores
-	void addHighScore(string name, int score); //Adds high score
-	Player getCharacter(); //Returns the character so other classes can use it.
-	bool replay(); //Sees if player wants to play again
-	void readTechPapers(); //Lose time, gain intel
-	void searchChange(); //Lose time, gain money
-	void endGame(bool win); //End game
-	std::list<Highscore> scores; //Linked list of scores.
-	void PrintScores()
+		
+	void System::printScores()
 	{
 		for (auto score : scores) //C++ for each loop
 		{
-			std::cout << score.name << " " << score.score << "\n"
+			std::cout << score.name << " " << score.score << "\n";
 		}
 	}
-	void LoadScores(std::string filepath)
+	void System::loadScores(std::string filePath)
 	{
-	std:string line;
+	string line;
 		std::ifstream fileStream(filePath);
 		if (fileStream.is_open())
 		{
@@ -61,75 +41,37 @@ public:
 				//name score
 				Highscore localScore;
 
-			std:istringstream iss(line);
+			istringstream iss(line);
 
 				iss >> localScore.name;
-				iss >> (int)localScore.score;
+				iss >> localScore.score;
 
 				scores.push_back(localScore);
 			}
 		}
 	}
-	void WriteScore(Highscore score)
+	void System::writeScore(Highscore score)
 	{
-		if (score.score > score.front().score)
+		if (score.score > scores.front().score)
 		{
-			score.push_front(score);
+			scores.push_front(score);
 		}
 	}
 
-private:
-	void fillScoreArray(); //Create score array for high scores
-	double fRand(double fMin, double fMax); //Rand function for double
-	void writeHighScore(); // Writes highscore to file
-	static const int MAX_SCORES = 10; //Max number of high scores to show
-	static const int FIXED_TIME_LOSS = 1; //Time loss for collecting change or reading papers
-	Player player;
-	Menus menu;
-	Encounter encounter;
-	Puzzle puzzle;
-	int numOfScores; //Number of high scores in file
-	string highScoreFile; //File name for highscore
-	Highscore highscore_list; //highscore linked list
-	bool gameStart;
-	bool needName; //Check if need name or note
-};
 
-
-//Testing prototypes
-void test_displayHighScore();
-void test_replay();
-void test_endGame();
-void test_readPapers();
-void test_changeSearch();
-void test_addHighScore();
-
-//For testing, delete or comment before submitting
-//int main() {
-//test_displayHighScore();
-//test_replay();
-//test_endGame();
-//test_readPapers();
-//test_changeSearch();
-//test_addHighScore();
-//}
 
 //Constructor. Initializes values.
-System::System() {
+System::System()
+:scores() 
+{
 	//Player and menu already set
 	gameStart = true; //The game has just started.
 	needName = true; //We need the player's name
 	player.steps = 20; //length of hallway
-	emptyScoreList();
 	highScoreFile = "highscores.txt";
-	fillScoreArray();
 	srand(time(0)); //Sets random seed
 }
 
-System()::scores()
-{
-	LoadScores(highScoreFile);
-}
 
 //Start menu of the game
 //Display menu and get input choice
@@ -137,14 +79,14 @@ void System::startMenu() {
 	//Get name and greet user
 	if (needName) {
 		cout << "What's your name? ";
-		cin >> player.name;
+		cin >> player.playerName;
 		needName = false; //No longer need name.
 	}
 	cout << "\n====================================================\n";
-	cout << "|\t\tWelcome, " << player.name << "\t\t\t|";
+	cout << "|\t\tWelcome, " << player.playerName << "\t\t\t|";
 	cout << "\n====================================================\n";
 	//Display the start menu and get player input
-	int playerChoice = menu.mainMenu();
+	int playerChoice = menu.menuMain();
 	//If 1 is inputed, start a new game.
 	if (playerChoice == 1) {
 		cout << "\nEntering the Game...\n\n";
@@ -152,13 +94,14 @@ void System::startMenu() {
 	}
 	//If 2, display highscore
 	else if (playerChoice == 2) {
-		displayHighScore();
+		loadScores("highscores.txt");
+		printScores();
 		//Repopulate start menu after displaying high scores
 		startMenu();
 	}
 	//If 3, end game
 	else if (playerChoice == 3) {
-		cout << "Quitting game...";
+		cout << "Quitting game...\n";
 		exit(1);
 	}
 }
@@ -173,13 +116,13 @@ void System::workGame() {
 		player.intelligence = rand() % 20 + 10; //range of 10-30
 		player.money = fRand(5.0, 20.0); //range of $5.00 - $20.00
 		player.steps = 20;
-		player.displayStats();
+		player.currentStats();
 		gameStart = false; //Set start to false, no longer a new game.
 	}
 	//display status messsage before menu
 	cout << "You are " << player.steps << " steps from the goal. Time left: " << player.time << endl;
 	//Display game menu, get choice, step into next game action.
-	int choice = menu.gameMenu();
+	int choice = menu.menuGame();
 	int randNum;
 	switch (choice) {
 		//Step forward. Chance of encounter
@@ -212,7 +155,7 @@ void System::workGame() {
 		break;
 		//View  character stats
 	case 4:
-		player.displayStats();
+		player.currentStats();
 		break;
 		//Quit the game
 	case 5:
@@ -243,43 +186,6 @@ Player System::getPlayer() {
 	return player;
 }
 
-//Displays the highscores stored in highscore_array.
-void System::displayHighScore() {
-	//Display the highscore
-	for (int i = 0; i < numOfScores; i++) {
-		if (highscore_array[i].score != -1) {
-			cout << highscore_array[i].name << " " << highscore_array[i].score << endl;
-		}
-	}
-	//If less than 10 scores, inform user there are no more.
-	if (numOfScores < MAX_SCORES - 1) {
-		cout << "-no more scores to show-\n\n";
-	}
-}
-
-//Fills highscore_array with up to MAX_SCORE scores. Does this when the system is created
-//So it is easier to display and add scores later.
-//File is formated as follows: Name (newline) score (newline)
-void System::fillScoreArray() {
-	ifstream inStream;
-	inStream.open((char*)highScoreFile.c_str());
-	//If cannot find or open, exit program
-	if (inStream.fail()) {
-		cout << "File open failed. Please use file highscores.txt\n";
-		exit(1);
-	}
-	//input high scores into an array
-	int index = 0;
-	do {
-		inStream >> highscore_array[index].name;
-		inStream >> highscore_array[index].score;
-		index++;
-	} while (!inStream.eof() && index < MAX_SCORES);
-	//Close file
-	inStream.close();
-	//Set number of scores to how many there are.
-	numOfScores = index;
-}
 
 //Allows rand to return double, for money initialization.
 //(found on stack overflow as noted above).
@@ -296,18 +202,17 @@ void System::endGame(bool win) {
 	//If lost
 	if (!win) {
 		cout << "One of your stats have dropped to 0 or less. You have lost.\n";
-		player.displayStats();
+		player.currentStats();
 	}
 	//If won
 	else {
 		cout << "You made it out of Shelby Center!\n";
-		player.displayStats();
+		player.currentStats();
 		int highScore = player.time * player.money * player.intelligence;
 		cout << "Your score: " << highScore << endl;
-		addHighScore(player.name, highScore);
 		//Add and display high scores
+		//Iterate through, if larger list.insert(highScore), otherwise go to the next one
 		cout << "\nHighscore list:\n";
-		displayHighScore();
 	}
 	//Ask to replay
 	if (replay()) {
@@ -363,183 +268,6 @@ void System::searchChange() {
 }
 
 
-//Adds highscore to highscore array, then call to write it.
-void System::addHighScore(string name, int score) {
-	//Create highscore
-	Highscore newHighScore;
-	newHighScore.name = name;
-	newHighScore.score = score;
-	int target = -1;
-	//Sort scores
-	//Find target spot first
-	for (int i = 0; i < numOfScores; i++) {
-		//If score is >, this is the target spot. Break out of loop.
-		if (score > highscore_array[i].score) {
-			target = i;
-			break;
-		}
-	}
-	//Now that target spot is there, we need to shift all values from target spot on to the right one.
-	if (target != -1) {
-		if (numOfScores < MAX_SCORES) {
-			numOfScores++;
-		}
-		for (int j = MAX_SCORES - 1; j > target; j--) {
-			highscore_array[j] = highscore_array[j - 1];
-		}
-		//set target spot to new score
-		highscore_array[target] = newHighScore;
-		//write the highscore to file
-		writeHighScore();
-	}
-}
-
-//Writes highscore to file
-void System::writeHighScore() {
-	ofstream outStream;
-	//Open/create file
-	outStream.open((char*)highScoreFile.c_str());
-	if (outStream.fail()) {
-		cout << "Could not write to file";
-	}
-	else {
-		for (int i = 0; i <= numOfScores; i++) {
-			outStream << highscore_array[i].name << endl;
-			outStream << highscore_array[i].score << endl;
-		}
-	}
-	outStream.close();
-}
-
 /*************************************************************************************/
 /*************************************TESTING*****************************************/
 /*************************************************************************************/
-//Test highscores system
-void test_displayHighScore() {
-	System system;
-	cout << "Testing for displaying highscores\n";
-	//Test 1: 10 scores
-	cout << "Test 1: file with exactly 10 scores\n";
-	system.setScoreFile("test1.txt");
-	system.displayHighScore();
-	cout << "Test 1: Passed\n\n";
-	//Test 2: List that isn't full (3 scores)
-	cout << "Test 2: file with only 3 scores\n";
-	system.setScoreFile("test2.txt");
-	system.displayHighScore();
-	cout << "Test 2 Passed\n\n";
-	//Test 3: Empty file
-	cout << "Test 3: Empty file\n";
-	system.setScoreFile("test3.txt");
-	system.displayHighScore();
-	cout << "Test 3 Passed\n\n";
-	//Test 4: File with 11 scores
-	cout << "Test 4: File with 11 scores\n";
-	system.setScoreFile("test4.txt");
-	system.displayHighScore();
-	cout << "Test 4 Passed\n\n";
-	//Test 5: Invalid file
-	cout << "Test 5: invalid file (The program will exit if passes)\n";
-	system.setScoreFile("fake.txt");
-	cout << "If you see this, test 5 fails";
-}
-
-//Test replay()
-void test_replay() {
-	System system;
-	cout << "Replay funntion testing\n";
-	//Test 1: Yes to replay
-	cout << "Test 1: Please enter Y or y\n";
-	bool choice = system.replay();
-	assert(true == choice);
-	cout << "Test 1 Passed\n\n";
-	//Test 2: No to replay
-	cout << "Test 2: Please enter N or n\n";
-	choice = system.replay();
-	assert(false == choice);
-	cout << "Test 2 passed\n\n";
-	//Test 3: invalid input
-	cout << "Test 3: invalid input, then any valid input\n";
-	choice = system.replay();
-	cout << "Test 3 passed\n\n";
-}
-
-//Test endGame()
-//Because endGame() either forces you to restart or end the game,
-//Can only test one at a time. Comment out the one you don't want to test.
-void test_endGame() {
-	cout << "endGame() Testing\n";
-	System system;
-	//system.endGame(true);
-	system.endGame(false);
-}
-
-//Test read papers
-void test_readPapers() {
-	System system;
-	int startTime = 25;
-	int startIntelligence = 15;
-	cout << "readPapers Testing\n";
-	system.readTechPapers();
-	Player player = system.getPlayer();
-	int timeChange = startTime - player.time;
-	int intelChange = player.intelligence - startIntelligence;
-	//Be sure intelligence is in the right range
-	assert(intelChange >= 1);
-	assert(intelChange <= 5);
-	//Be sure time change is correct
-	assert(timeChange = 1);
-
-	cout << "\nStart time: " << startTime << " New time: " << player.time << endl;
-	cout << "Start intelligence: " << startIntelligence << " New intelligence: " << player.intelligence << endl;
-	cout << "\nIf everything matches, test passes\n";
-}
-
-//Test changeSearch
-void test_changeSearch() {
-	System system;
-	int startTime = 25;
-	int startMoney = 10.00;
-	cout << "changeSearch Testing\n";
-	system.searchChange();
-	Player player = system.getPlayer();
-	int timeChange = startTime - player.time;
-	double moneyChange = player.money - startMoney;
-	//Be sure intelligence is in the right range
-	assert(moneyChange >= 0.25);
-	assert(moneyChange <= 3.50);
-	//Be sure time change is correct
-	assert(timeChange = 1);
-
-	cout << "\nStart time: " << startTime << " New time: " << player.time << endl;
-	cout << "Start Money: " << startMoney << " New money: " << player.money << endl;
-	cout << "\nIf everything matches, test passes\n";
-}
-
-//test addHighScore
-void test_addHighScore() {
-	System system;
-	Highscore testHS;
-	testHS.name = "Test";
-	testHS.score = 6000;
-	cout << "Testing for adding highscores\n";
-	cout << "Will add Test 6000 score to various scenarios\n\n";
-	//test1: Adding to empty file
-	cout << "Test 1: no scores\n";
-	system.setScoreFile("addscoreTest1.txt");
-	system.addHighScore(testHS.name, testHS.score);
-	system.displayHighScore();
-	cout << "\nIf list contains exactly one score, Test 6000, Test 1 passes\n\n";
-	//Test2: Adding when less than 10 scores.
-	cout << "Test 2: Adding when less than 10 scores exist\n\n";
-	system.setScoreFile("addscoreTest2.txt");
-	system.addHighScore(testHS.name, testHS.score);
-	system.displayHighScore();
-	cout << "\nIf list contains less than 10 scores and has Test 6000 in correct order, Test 2 passes\n\n";
-	//Test 3: adding when already 10 scores
-	cout << "Test 3: Adding when there are already 10 scores\n\n";
-	system.setScoreFile("addscoreTest3.txt");
-	system.addHighScore(testHS.name, testHS.score);
-	system.displayHighScore();
-	cout << "\nIf list contains 10 items and Test 6000 is in the correct location, Test 3 Passes\n\n";
-}

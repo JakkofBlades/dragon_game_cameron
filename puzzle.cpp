@@ -22,13 +22,13 @@ using namespace std;
 //Controls the puzzles
 class Puzzle {
 public:
-	Puzzle(Character playerIn); //Constructor
+	Puzzle(Player playerIn); //Constructor
 	Puzzle(); //Default Constructor
-	void setCharacter(Character playerIn); //Set player
-	Character randomPuzzle();
+	void setPlayer(Player playerIn); //Set player
+	Player randomPuzzle();
 private:
 	static const int NUMBER_OF_PUZZLES = 6; //Number of different encounters
-	Character player;
+	Player player;
 	void nintendoConsole(); //What home console released after the Wii?
 	void child(); //What's the name of the tiger?
 	void cards(); //how many sheep
@@ -58,18 +58,18 @@ Puzzle::Puzzle(Player playerIn) {
 }
 
 //Sets player to playerIn
-void Puzzle::setCharacter(Player playerIn) {
+void Puzzle::setPlayer(Player playerIn) {
 	player = playerIn;
 }
 
 
 //Sets a random puzzle
-Character Puzzle::randomPuzzle() {
+Player Puzzle::randomPuzzle() {
 	cout << endl;
 	int randNum = rand() % NUMBER_OF_PUZZLES; //Randomly choose from encounters
 	switch (randNum) {
 	case 0:
-		nintendoConsoles();
+		nintendoConsole();
 		break;
 	case 1:
 		child();
@@ -107,14 +107,14 @@ void Puzzle::nintendoConsole() {
 	cout << "Nintendo home console followed after the successful Wii.";
 	cout << "Your choices are:\n1) N64\n2) GameCube\n3) WiiU\n4) Switch\n";
 	cout << "What is your answer? (Enter a number 1-4): ";
-	cin >> playerAnswer;
+	cin >> answerChoice;
 	verifyInput();
 	cout << endl; //Formatting
 	int changeIntel;
 	int changeTime;
 	double changeMoney;
 	//Correct answer
-	if (playerAnswer == 3) {
+	if (answerChoice == 3) {
 		changeMoney = fRand(.50, 3.75);
 		changeIntel = (rand() % 3 + 1);
 		cout << "You answered correctly. The kid pays you $" << fixed << setprecision(2) << changeMoney << endl;
@@ -126,7 +126,7 @@ void Puzzle::nintendoConsole() {
 		cout << "You answered incorrectly. The nerds mock you about your lack of gaming knowledge.\n";
 		cout << "You lose " << changeTime << " time\n";
 	}
-	player.intelligence = player.intellegence + changeIntel;
+	player.intelligence = player.intelligence + changeIntel;
 	player.money = player.money + changeMoney;
 	player.time = player.time - changeTime;
 	player.steps = player.steps - 1; //Move 1 step closer.
@@ -227,7 +227,7 @@ void Puzzle::weeks() {
 		player.money = player.money + 15.0;
 	}
 	else {
-		cout << "Bob looks dissapointed. \"Guess " << player.name << " is not supposed to be here.\"\n";
+		cout << "Bob looks dissapointed. \"Guess " << player.playerName << " is not supposed to be here.\"\n";
 		cout << "You lose 5 intelligence\n";
 		player.intelligence = player.intelligence - 5;
 	}
@@ -254,7 +254,7 @@ void Puzzle::pattern() {
 	}
 	else if (answerChoice == 3) {
 		cout << "The fairy rolls her eyes. She is not impressed by your inability to count."
-			<< " She throws some fairy dust on you and when you look down at your watch you realize you've lost 3 time."
+			<< " She throws some fairy dust on you and when you look down at your watch you realize you've lost 3 time.";
 		timeChange = 3;
 	}
 	else {
@@ -271,9 +271,9 @@ void Puzzle::pattern() {
 //Joe's Mario Bros trivia.
 //Gain nothing, lose time.
 void Puzzle::joe() {
-	cout << "A teen runs up and blocks your path. He says \"My name is Joe. You can't pass until you solve my puzzle. \n"
-		<< "The riddle is: In Super Mario Bros 2, you can play as Mario, Peach, Toad and one other character.\"
-		<< " Who is the fourth character?"
+	cout << "A teen runs up and blocks your path. He says \"My name is Joe." << endl << "You can't pass until you solve my puzzle. \n"
+		<< "The riddle is: In Super Mario Bros 2, you can play as Mario, Peach, Toad and one other character.\""
+		<< " Who is the fourth character?";
 	cout << "1) Mario\n2) Peach\n3) Luigi\n4) Green Mario\n";
 	cout << "What is your answer? (enter a number 1-4): ";
 	cin >> answerChoice;

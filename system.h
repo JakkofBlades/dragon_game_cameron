@@ -22,6 +22,7 @@ using namespace std;
 #include "player.h" //Player class
 #include "encounter.h" //Encounter class
 #include "puzzle.h" //Puzzle class
+#include <list> //Linked List
 
 //High score struct 
 struct Highscore {
@@ -34,17 +35,19 @@ public:
 	System(); //Constructor
 	void startMenu(); //Calls the start menu, waits for choices.
 	void workGame(); //Steps to next move in game
-	void displayHighScore(); //Display high scores
-	void addHighScore(string name, int score); //Adds high score
-	Character getCharacter(); //Returns the character so other classes can use it.
+	Player getPlayer(); //Returns the character so other classes can use it.
 	void setScoreFile(string filename); //Changes highscore file, refills array (USED FOR TESTING)
 	bool replay(); //Sees if player wants to play again
 	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
+	std::list<Highscore> scores; //Linked list of scores.
+	void printScores();
+	void loadScores(std::string filePath);
+	void writeScore(Highscore score);
+
 private:
 	void fillScoreArray(); //Create score array for high scores
-	void emptyScoreArray(); //Clears score array
 	double fRand(double fMin, double fMax); //Rand function for double
 	void writeHighScore(); // Writes highscore to file
 	static const int MAX_SCORES = 10; //Max number of high scores to show
@@ -55,9 +58,7 @@ private:
 	Puzzle puzzle;
 	int numOfScores; //Number of high scores in file
 	string highScoreFile; //File name for highscore
-	Highscore highscore_list; //highscore linked list
 	bool gameStart;
-	bool needName;
-	int fixedTimeLoss; //Time loss for collecting change or reading papers
+	bool needName; //Check if need name or note
 };
 #endif

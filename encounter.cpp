@@ -42,10 +42,6 @@ private:
 	double fRand(double fMin, double fMax); //Rand function for double
 };
 
-//Used for testing. Comment out before submitting.
-int main() {
-
-}
 
 //default constructor
 Encounter::Encounter() {
@@ -106,7 +102,7 @@ void Encounter::professor() {
 	int changeTime;
 	if (randNum < 80) {
 		cout << "Your conversation is short, but you feel smarter.\n";
-		changeIntel = rand() %  + 1;
+		changeIntel = rand() % 4 + 1;
 		cout << "You earned " << changeIntel << " intelligence, but lose 1 time\n";
 		changeTime = 1;
 	}
@@ -129,9 +125,9 @@ void Encounter::student() {
 	//30% chance to gain no intelligence
 	//10% chance to lose 1-3 money
 	int randNum = rand() % 100;
-	int changeIntel;
+	int changeIntel = 0;
 	int changeTime = 1;
-	double changeMoney;
+	double changeMoney = 0;
 	if (randNum < 60) {
 		cout << "The student explains this project to you\n";
 		changeIntel = rand() % 3 + 1;

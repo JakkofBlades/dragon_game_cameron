@@ -35,11 +35,6 @@ void test_menuMain();
 //Test the game's menu.
 void test_menuGame();
 
-//Main, use for testing this file.
-int main() {
-test_menuGame();
-test_menuMain();
-}
 
 //Constructor. Sets playerAction to 0.
 Menus::Menus() {

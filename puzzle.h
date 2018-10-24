@@ -34,7 +34,7 @@ public:
 private:
 	static const int PUZZLES_POSSIBLE = 6; //Number of different encounters
 	Player player;
-	void nintedoConsole(); //What home console released after the Wii?
+	void nintendoConsole(); //What home console released after the Wii?
 	void child(); //What's the name of the tiger?
 	void cards(); //Cards remaining
 	void weeks(); //how many months with 28 days

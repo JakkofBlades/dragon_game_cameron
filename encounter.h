@@ -26,7 +26,7 @@ using namespace std;
 #include "player.h" //The header for player class.
 
 //Encounter class - manages events
-class Encounters
+class Encounter
 {
 public:
 	Encounter(); //Default Constructor
