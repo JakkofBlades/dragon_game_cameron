@@ -50,14 +50,33 @@ using namespace std;
 			}
 		}
 	}
+
 	void System::writeScore(Highscore score)
 	{
-		if (score.score > scores.front().score)
+		std::ofstream outStream("highscores.txt", std::ofstream::trunc);
+		for (auto score : scores)
 		{
-			scores.push_front(score);
+			outStream << score.name << " " << score.score << "\n";
 		}
 	}
 
+	void System::addScore(Highscore score)
+	{
+		if (scores.size() == 0) 
+		{
+			scores.push_front(score);
+			return;
+		}
+		for (auto it = scores.begin(); it != scores.end(); ++it) //C++ for each loop
+		{
+			if (score.score > it->score)
+			{
+				scores.insert(it, score);
+				break;
+			}
+		}
+		scores.push_back(score);
+	}
 
 
 //Constructor. Initializes values.
@@ -203,14 +222,26 @@ void System::endGame(bool win) {
 	if (!win) {
 		cout << "One of your stats have dropped to 0 or less. You have lost.\n";
 		player.currentStats();
+		int highScoreVal = player.time * player.money * player.intelligence;
+		Highscore newScore;
+		newScore.name = player.playerName;
+		newScore.score = highScoreVal;
+		//Add and display high scores
+		addScore(newScore);
+		writeScore(newScore);
 	}
 	//If won
 	else {
 		cout << "You made it out of Shelby Center!\n";
 		player.currentStats();
-		int highScore = player.time * player.money * player.intelligence;
-		cout << "Your score: " << highScore << endl;
+		int highScoreVal = player.time * player.money * player.intelligence;
+		cout << "Your score: " << highScoreVal << endl;
+		Highscore newScore;
+		newScore.name = player.playerName;
+		newScore.score = highScoreVal;
 		//Add and display high scores
+		addScore(newScore);
+		writeScore(newScore);
 		//Iterate through, if larger list.insert(highScore), otherwise go to the next one
 
 		cout << "\nHighscore list:\n";

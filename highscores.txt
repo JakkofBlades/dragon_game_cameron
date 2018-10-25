@@ -1,3 +1,10 @@
-Jakk 10000
-Cameron 7000
-Cooper 3000
+Jakk 30000
+Cameron 20000
+Cooper 10000
+Alex 5000
+HayBug 2500
+Bob 0
+Joe 0
+Sue 0
+Sora 0
+Riku 0

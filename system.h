@@ -32,24 +32,23 @@ struct Highscore {
 
 class System {
 public:
+	std::list<Highscore> scores; //Linked list of scores.
+
 	System(); //Constructor
 	void startMenu(); //Calls the start menu, waits for choices.
 	void workGame(); //Steps to next move in game
 	Player getPlayer(); //Returns the character so other classes can use it.
-	void setScoreFile(string filename); //Changes highscore file, refills array (USED FOR TESTING)
 	bool replay(); //Sees if player wants to play again
 	void readTechPapers(); //Lose time, gain intel
 	void searchChange(); //Lose time, gain money
 	void endGame(bool win); //End game
-	std::list<Highscore> scores; //Linked list of scores.
 	void printScores();
 	void loadScores(std::string filePath);
 	void writeScore(Highscore score);
+	void addScore(Highscore score);
 
 private:
-	void fillScoreArray(); //Create score array for high scores
 	double fRand(double fMin, double fMax); //Rand function for double
-	void writeHighScore(); // Writes highscore to file
 	static const int MAX_SCORES = 10; //Max number of high scores to show
 	static const int FIXED_TIME_LOSS = 1; //Time loss for collecting change or reading papers
 	Player player;

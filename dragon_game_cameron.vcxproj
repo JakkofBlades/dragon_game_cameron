@@ -26,6 +26,7 @@
     <ClCompile Include="project1-design.cpp" />
     <ClCompile Include="puzzle.cpp" />
     <ClCompile Include="system.cpp" />
+    <ClCompile Include="testdrivers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="encounter.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="puzzle.h" />
     <ClInclude Include="system.h" />
+    <ClInclude Include="testdrivers.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscores.txt" />

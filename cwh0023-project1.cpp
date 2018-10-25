@@ -22,11 +22,13 @@
 #include "player.h"		//Player Class
 #include "encounter.h"  //Encounter class
 #include "puzzle.h"	//Puzzle class
+#include "testdrivers.h"
 using namespace std;
 
 //Starts the game.
 int main() 
 {
+	testHighScore();
 	System awakenSystem;
 	awakenSystem.startMenu();
 }

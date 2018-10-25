@@ -137,7 +137,7 @@ void Puzzle::child() {
 			changeStep = 4;
 		}
 	}
-	else if (answerChoice == 3) {
+	else if (answerChoice == 1) {
 		cout << "You answer: Auburn's tiger is named Aubie.\n";
 		cout << "You gain 4 intelligence\n";
 		changeIntel = 4;
