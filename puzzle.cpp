@@ -205,6 +205,7 @@ void Puzzle::weeks() {
 		cout << "You lose 5 intelligence\n";
 		player.intelligence = player.intelligence - 5;
 	}
+	player.time = player.time - 1;
 	player.steps = player.steps - 1;
 	cout << endl; //formatting
 }

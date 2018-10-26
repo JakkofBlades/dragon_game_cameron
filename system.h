@@ -48,14 +48,12 @@ public:
 	void addScore(Highscore score);
 
 private:
-	double fRand(double fMin, double fMax); //Rand function for double
-	static const int MAX_SCORES = 10; //Max number of high scores to show
-	static const int FIXED_TIME_LOSS = 1; //Time loss for collecting change or reading papers
+	double fRand(double fMin, double fMax); //Random function for doubles
+	static const int FIXED_TIME_LOST = 1; //Time lost for searching for change or reading papers
 	Player player;
 	Menus menu;
 	Encounter encounter;
 	Puzzle puzzle;
-	int numOfScores; //Number of high scores in file
 	string highScoreFile; //File name for highscore
 	bool gameStart;
 	bool needName; //Check if need name or note

@@ -39,3 +39,4 @@ bool testHighScore()
 	system.printScores();
 	return true;
 }
+

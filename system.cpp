@@ -286,7 +286,7 @@ void System::readTechPapers() {
 	int intelChange = rand() % 5 + 1; //Range of 1-5
 	cout << "You gain " << intelChange << " intelligence\n\n";
 	player.intelligence = player.intelligence + intelChange;
-	player.time = player.time - FIXED_TIME_LOSS;
+	player.time = player.time - FIXED_TIME_LOST;
 }
 
 //Search for loose change
@@ -296,7 +296,7 @@ void System::searchChange() {
 	double moneyChange = fRand(0.01, 100.00);
 	cout << "You gain $" << fixed << setprecision(2) << moneyChange << "\n\n";
 	player.money = player.money + moneyChange;
-	player.time = player.time - FIXED_TIME_LOSS;
+	player.time = player.time - FIXED_TIME_LOST;
 }
 
 
